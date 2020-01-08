@@ -1,0 +1,27 @@
+{
+  "name": "eos-lib",
+  "version": "1.0.0",
+  "description": "EOS lib",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndrewVV/eos-lib.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndrewVV/eos-lib/issues"
+  },
+  "homepage": "https://github.com/AndrewVV/eos-lib#readme",
+  "dependencies": {
+    "eosjs": "^20.0.0"
+  },
+  "devDependencies": {
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.2"
+  }
+}
