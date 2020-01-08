@@ -18,8 +18,9 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		this.getBalance(nameAccount, "EOS")  // ticker name of token
-		this.sendTx('lioninjungle', 0.0001, "test123", "JUNGLE")
+		// this.getBalance(nameAccount, "EOS")  // ticker name of token
+        // this.sendTx('lioninjungle', 0.0001, "test123", "JUNGLE")
+        this.getTxInfo(nameAccount)
     }
     
     generateAccount(){
@@ -47,21 +48,7 @@ class EosLib {
     getBalance(account, ticker="EOS"){
     	return new Promise(async(resolve,reject)=>{
     	    try{
-    	    	let data = {
-    	    		"code" : "eosio.token",
-					"account" : account,
-					"symbol": ticker
-    	    	}
-                let url = `${provider}/v1/chain/get_currency_balance`
-    	    	let options = {
-                	body: JSON.stringify(data),
-                	method: 'POST',
-                	headers: {"Content-Type": "application/json"}
-                };
-                let balance = await fetch(url, options)
-                    .then(res => {
-					    return res.json()
-				    })
+                let balance = await api.rpc.get_currency_balance("eosio.token", account, ticker)
 				balance = parseFloat(balance)
 				console.log(balance)
 				return resolve(balance)
@@ -69,7 +56,7 @@ class EosLib {
     	        return reject(e);
     	    }
 		})
-	}
+    }
 
     sendTx(to, amount, memo, asset="EOS"){
     	return new Promise(async(resolve,reject)=>{
@@ -100,7 +87,13 @@ class EosLib {
     	        return reject(e);
     	    }
 		})
-	}
+    }
+    
+    async getTxInfo(account){
+        let data = await api.rpc.history_get_actions(account, 69411439)
+        console.log(data)
+        return data
+    }
 }
 
 module.exports = EosLib;
