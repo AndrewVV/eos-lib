@@ -1,7 +1,7 @@
 // development only
 const nameAccount = "eosandrewvv1"
 const provider = 'http://jungle2.cryptolions.io:8888'
-const providerHistory = 'https://junglehistory.cryptolions.io';
+// const providerHistory = 'https://junglehistory.cryptolions.io';
 // const nameAccount = "hitbtcpayout";
 const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
 const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
@@ -10,7 +10,7 @@ const privateKeyActive = "5K1FibAhERHAsED8FstMJCWYxqhxx9zZSNy1XgtCX19Bdxk5bL9"
 
 const ecc = require('eosjs-ecc')
 const fetch = require('node-fetch');
-const { Api, JsonRpc } = require('eosjs');
+const { Api, JsonRpc, RpcError } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');      // development only
 const { TextEncoder, TextDecoder } = require('util');
 
@@ -21,8 +21,8 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 class EosLib {
 	constructor(){
 		// this.getBalance(nameAccount, "EOS")  // ticker name of token
-        // this.sendTx('lioninjungle', 0.0001, "test123", "JUNGLE")
-        this.getTxInfo(nameAccount)
+        this.sendTx('atticlabjbpn', 0.0001, "test3")
+        // this.getTxInfo(nameAccount)
     }
     
     generateAccount(){
