@@ -1,6 +1,8 @@
 // development only
 const nameAccount = "eosandrewvv1"
 const provider = 'http://jungle2.cryptolions.io:8888'
+const providerHistory = 'https://junglehistory.cryptolions.io';
+// const nameAccount = "hitbtcpayout";
 const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
 const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
 const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
@@ -8,7 +10,7 @@ const privateKeyActive = "5K1FibAhERHAsED8FstMJCWYxqhxx9zZSNy1XgtCX19Bdxk5bL9"
 
 const ecc = require('eosjs-ecc')
 const fetch = require('node-fetch');
-const { Api, JsonRpc, RpcError } = require('eosjs');
+const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');      // development only
 const { TextEncoder, TextDecoder } = require('util');
 
@@ -90,10 +92,45 @@ class EosLib {
     }
     
     async getTxInfo(account){
-        let data = await api.rpc.history_get_actions(account, 69411439)
-        console.log(data)
-        return data
-    }
+		let result = [];
+		let url = `${providerHistory}/v2/history/get_actions?account=${account}`
+		let allTx = await fetch(url)
+			.then(res => {
+				return res.json()
+			})
+		allTx = allTx.actions;
+		for(let txKey in allTx){
+			let tx = allTx[txKey];
+			let hash = tx.trx_id;
+			let amount = tx.act.data.amount;
+			let symbol = tx.act.data.symbol
+			let memo = tx.act.data.memo;
+			let from = tx.act.data.from;
+			let to = tx.act.data.to;
+			let typeOperation = tx.act.name;
+			let timestamp = tx["@timestamp"];
+			let blockNumber = tx.block_num;
+			let txData = this.formatTxData(hash, amount, symbol, memo, from, to, typeOperation, timestamp, blockNumber);
+			result.push(txData)
+		}
+		console.log(result)
+        return result
+	}
+	
+	formatTxData(hash, amount, symbol, memo, from, to, typeOperation, timestamp, blockNumber){
+		let txData = {
+			txHash: hash,
+			amount,
+			ticker: symbol, 
+			memo,
+			from,
+			to,
+			typeOperation,
+			timestamp,
+			blockNumber
+		};
+		return txData;
+	}
 }
 
 module.exports = EosLib;
