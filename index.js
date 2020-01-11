@@ -1,8 +1,6 @@
 // development only
 const nameAccount = "eosandrewvv1"
 const provider = 'http://jungle2.cryptolions.io:8888'
-// const providerHistory = 'https://junglehistory.cryptolions.io';
-// const nameAccount = "hitbtcpayout";
 const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
 const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
 const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
@@ -20,9 +18,11 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		// this.getBalance(nameAccount, "EOS")  // ticker name of token
-        this.sendTx('atticlabjbpn', 0.0001, "test3")
-        // this.getTxInfo(nameAccount)
+		this.getBalance(nameAccount, "EOS")  // ticker name of token
+        // this.sendTx('daon3zmzmyyz', 0.0001, "test1")
+		// this.getTxInfo(nameAccount)
+		// this.createNewAccount("eosandrewvv3")
+		// this.buyRam()
     }
     
     generateAccount(){
@@ -130,6 +130,113 @@ class EosLib {
 			blockNumber
 		};
 		return txData;
+	}
+
+	createNewAccount = async (newAccount) => {
+    	return new Promise(async(resolve,reject)=>{
+    	    try{
+				let ownerKey = await this.generateAccount();
+				let activeKey = await this.generateAccount();
+				let result = await api.transact({
+					actions: [{
+					  	account: 'eosio',
+					  	name: 'newaccount',
+						authorization: [{
+							actor: nameAccount,
+							permission: 'active',
+						}],
+						data: {
+							creator: nameAccount,
+							name: newAccount,
+							owner: {
+								threshold: 1,
+								keys: [{
+									key: ownerKey.publicKey,
+									weight: 1
+								}],
+								accounts: [],
+								waits: []
+							},
+							active: {
+								threshold: 1,
+								keys: [{
+									key: activeKey.publicKey,
+									weight: 1
+								}],
+								accounts: [],
+								waits: []
+							},
+						},
+					},
+					{
+						account: 'eosio',
+						name: 'buyrambytes',
+						authorization: [{
+						actor: nameAccount,
+						permission: 'active',
+					}],
+						data: {
+							payer: nameAccount,
+							receiver: newAccount,
+							bytes: 4096, // 8192,
+						},
+					},
+					{
+						account: 'eosio',
+						name: 'delegatebw',
+						authorization: [{
+							actor: nameAccount,
+							permission: 'active',
+						}],
+						data: {
+							from: nameAccount,
+							receiver: newAccount,
+							stake_net_quantity: '1.0000 EOS',
+							stake_cpu_quantity: '1.0000 EOS',
+							transfer: false,
+						}
+					}]
+				}, {
+					blocksBehind: 3,
+					expireSeconds: 30,
+				});
+				let txHash = result.transaction_id
+  				console.log(txHash);
+				return resolve(txHash)
+			}catch(e){
+    	        return reject(e);
+    	    }
+		})
+	}
+
+	buyRam(){
+		return new Promise(async(resolve,reject)=>{
+			try{
+				let result = await api.transact({
+					actions: [{
+					  	account: 'eosio',
+					  	name: 'buyrambytes',
+					  	authorization: [{
+							actor: nameAccount,
+							permission: 'active',
+						}],
+						data: {
+							payer: nameAccount,
+							receiver: nameAccount,
+							bytes: 8192,
+						},
+					}]
+				}, {
+					blocksBehind: 3,
+					expireSeconds: 30,
+				});
+				let txHash = result.transaction_id
+  				console.log(txHash);
+				return resolve(txHash)
+			}catch(e){
+				return reject(e)
+			}
+		})
 	}
 }
 
