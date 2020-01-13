@@ -1,7 +1,7 @@
 // development only
-const nameAccount = "eosandrewvv1"
-const provider = 'http://jungle2.cryptolions.io:8888'
-const providerHistory = 'https://junglehistory.cryptolions.io';
+const nameAccount = "coinbeneabbc"
+const provider = 'https://3.p2p.node.abbcnet.io'
+const providerHistory = 'https://3.p2p.node.abbcnet.io';
 const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
 const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
 const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
@@ -19,7 +19,7 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		this.getBalance(nameAccount, "EOS")  // ticker name of token
+		this.getBalance(nameAccount, "ABBC")  // ticker name of token
         // this.sendTx('lioninjungle', "0.0010", "test", "EOS")
 		// this.getTxInfo(nameAccount)
     }
