@@ -1,7 +1,7 @@
 // development only
 const nameAccount = "coinbeneabbc"
-const provider = 'https://3.p2p.node.abbcnet.io'
-const providerHistory = 'https://3.p2p.node.abbcnet.io';
+const provider = "https://1.rpc.node.abbcnet.io";
+const providerHistory = 'https://1.rpc.node.abbcnet.io';
 const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
 const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
 const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
