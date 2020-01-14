@@ -19,9 +19,9 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		this.getBalance(nameAccount, "ABBC")  // ticker name of token
+		// this.getBalance(nameAccount, "ABBC")  // ticker name of token
         // this.sendTx('lioninjungle', "0.0010", "test", "EOS")
-		// this.getTxInfo(nameAccount)
+		this.getTxInfo(nameAccount)
     }
     
     generateAccount(){
@@ -98,22 +98,23 @@ class EosLib {
     
     async getTxInfo(account){
 		let result = [];
-		let url = `${providerHistory}/v2/history/get_actions?account=${account}`
-		let allTx = await fetch(url)
-			.then(res => {
-				return res.json()
-			})
+		let url = `${providerHistory}/v1/history/get_actions`
+		let body = {
+			"account_name": account
+		}
+		let allTx = await this.postMethod(url, body)
 		allTx = allTx.actions;
 		for(let txKey in allTx){
-			let tx = allTx[txKey];
+			let tx = allTx[txKey].action_trace;
 			let hash = tx.trx_id;
-			let amount = tx.act.data.amount;
-			let symbol = tx.act.data.symbol
+			let quantity = tx.act.data.quantity.split(' ')
+			let amount = quantity[0];
+			let symbol = quantity[1]
 			let memo = tx.act.data.memo;
 			let from = tx.act.data.from;
 			let to = tx.act.data.to;
 			let typeOperation = tx.act.name;
-			let timestamp = tx["@timestamp"];
+			let timestamp = tx["block_time"];
 			let blockNumber = tx.block_num;
 			let txData = this.formatTxData(hash, amount, symbol, memo, from, to, typeOperation, timestamp, blockNumber);
 			result.push(txData)
@@ -135,6 +136,27 @@ class EosLib {
 			blockNumber
 		};
 		return txData;
+	}
+
+	postMethod(url, body={}){
+		return new Promise(async(resolve,reject)=>{
+			try{
+				let options= {
+					method: 'POST',
+                	body: JSON.stringify(body),
+                	headers: {
+						"Content-Type": "application/json"
+					}
+            	};
+				let result = await fetch(url, options)
+					.then(res => {
+						return res.json()
+					})
+				return resolve(result);
+			}catch(e){
+    	    	return reject(e);
+			}
+		})
 	}
 
 	createNewAccount = async (newAccount) => {
