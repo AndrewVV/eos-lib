@@ -1,11 +1,11 @@
 // development only
-const nameAccount = "coinbeneabbc"
+const nameAccount = "eosandrewvv1"
 const provider = "https://1.rpc.node.abbcnet.io";
 const providerHistory = 'https://1.rpc.node.abbcnet.io';
-const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
-const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
-const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
-const privateKeyActive = "5K1FibAhERHAsED8FstMJCWYxqhxx9zZSNy1XgtCX19Bdxk5bL9"
+const publicKeyOwner = "EOS5QGbdzSXa39ZQUp29yjvJwdRcYWndHTpdG2zFfU3H3kxfJnQir"
+const privateKeyOwner = "5JDA4AwDLLYVCbGcnakCM5HsQMFjVtZveBq2XY9BrxC6YQRj9UK"
+const publicKeyActive = "EOS7P15kRJmnwZkExvWHJUiMKtbvLHhqFkFrfXcLR2YTv51kUk6E3"
+const privateKeyActive = "5JYiRg9npCDUEHH7c7FvXU8PDboMB25xkpc9y5ZBezyUJwswdSU"
 
 const ecc = require('eosjs-ecc')
 const fetch = require('node-fetch');
@@ -19,9 +19,10 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		// this.getBalance(nameAccount, "ABBC")  // ticker name of token
-        // this.sendTx('lioninjungle', "0.0010", "test", "EOS")
-		this.getTxInfo(nameAccount)
+		this.getBalance(nameAccount, "ABBC")  // ticker name of token
+        // this.sendTx('address', "0.00000003", "test", "ABBC")
+		// this.getTxInfo(nameAccount)
+		// this.publicKeyFromPrivKey(privateKeyActive)
     }
     
     generateAccount(){
@@ -65,7 +66,7 @@ class EosLib {
 		})
     }
 
-    sendTx(to, amount, memo, asset="EOS"){
+    sendTx(to, amount, memo, asset){
     	return new Promise(async(resolve,reject)=>{
     	    try{
  				let result = await api.transact({
@@ -86,7 +87,7 @@ class EosLib {
  				}, {
  				   blocksBehind: 3,
  				   expireSeconds: 30,
-                })
+				})
                 let txHash = result.transaction_id
   				console.log(txHash);
 				return resolve(txHash)
