@@ -1,11 +1,11 @@
 // development only
 const nameAccount = "eosandrewvv1"
-const provider = "https://1.rpc.node.abbcnet.io";
-const providerHistory = 'https://1.rpc.node.abbcnet.io';
-const publicKeyOwner = "EOS5QGbdzSXa39ZQUp29yjvJwdRcYWndHTpdG2zFfU3H3kxfJnQir"
-const privateKeyOwner = "5JDA4AwDLLYVCbGcnakCM5HsQMFjVtZveBq2XY9BrxC6YQRj9UK"
-const publicKeyActive = "EOS7P15kRJmnwZkExvWHJUiMKtbvLHhqFkFrfXcLR2YTv51kUk6E3"
-const privateKeyActive = "5JYiRg9npCDUEHH7c7FvXU8PDboMB25xkpc9y5ZBezyUJwswdSU"
+const provider = "https://daobet.eossweden.org";
+const providerHistory = 'https://daobet.eossweden.org'
+const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
+const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
+const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
+const privateKeyActive = "5K1FibAhERHAsED8FstMJCWYxqhxx9zZSNy1XgtCX19Bdxk5bL9"
 
 const ecc = require('eosjs-ecc')
 const fetch = require('node-fetch');
@@ -19,11 +19,12 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 class EosLib {
 	constructor(){
-		this.getBalance(nameAccount, "ABBC")  // ticker name of token
-		this.getLastBlock()
+		this.getBalance(nameAccount, "BET")  // ticker name of token
+		// this.getLastBlock()
 		// this.generateAccount()
-        // this.sendTx('address', "0.10000000", "memo", "ABBC")
+        // this.sendTx('address', "1.0000", "memo", "BET")
 		// this.getTxInfo(nameAccount)
+		// this.createNewAccount("coinsbitdbet")
     }
     
     generateAccount(){
@@ -107,14 +108,14 @@ class EosLib {
     
     async getTxInfo(account){
 		let result = [];
-		let url = `${providerHistory}/v1/history/get_actions`
-		let body = {
-			"account_name": account
-		}
-		let allTx = await this.postMethod(url, body)
+		let url = `${providerHistory}/v2/history/get_actions?account=${account}`
+		let allTx = await fetch(url)
+			.then(res => {
+				return res.json()
+			})
 		allTx = allTx.actions;
 		for(let txKey in allTx){
-			let tx = allTx[txKey].action_trace;
+			let tx = allTx[txKey];
 			let hash = tx.trx_id;
 			let quantity = tx.act.data.quantity.split(' ')
 			let amount = quantity[0];
@@ -123,7 +124,7 @@ class EosLib {
 			let from = tx.act.data.from;
 			let to = tx.act.data.to;
 			let typeOperation = tx.act.name;
-			let timestamp = tx["block_time"];
+			let timestamp = tx["@timestamp"];
 			let blockNumber = tx.block_num;
 			let txData = this.formatTxData(hash, amount, symbol, memo, from, to, typeOperation, timestamp, blockNumber);
 			result.push(txData)
@@ -227,9 +228,10 @@ class EosLib {
 						data: {
 							from: nameAccount,
 							receiver: newAccount,
-							stake_net_quantity: '1.00000000 ABBC',
-							stake_cpu_quantity: '1.00000000 ABBC',
-							transfer: false,
+							stake_net_quantity: '0.1000 BET',
+							stake_cpu_quantity: '0.1000 BET',
+							stake_vote_quantity: '1.0000 BET',
+							transfer: true,
 						}
 					}]
 				}, {
