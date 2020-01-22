@@ -20,9 +20,10 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 class EosLib {
 	constructor(){
 		this.getBalance(nameAccount, "ABBC")  // ticker name of token
-        // this.sendTx('address', "0.00000003", "test", "ABBC")
+		this.getLastBlock()
+		// this.generateAccount()
+        // this.sendTx('address', "0.10000000", "memo", "ABBC")
 		// this.getTxInfo(nameAccount)
-		// this.publicKeyFromPrivKey(privateKeyActive)
     }
     
     generateAccount(){
@@ -39,7 +40,14 @@ class EosLib {
     	        return reject(e);
 			}
 		})
-    }
+	}
+	
+	async getLastBlock(){
+		let data = await api.rpc.get_info();
+		let blockNumber = data.head_block_num;
+		console.log(blockNumber)
+		return blockNumber;
+	}
 
     privKeyFromSeed(seed){
         let privKey = ecc.seedPrivate(seed)
@@ -219,8 +227,8 @@ class EosLib {
 						data: {
 							from: nameAccount,
 							receiver: newAccount,
-							stake_net_quantity: '1.0000 EOS',
-							stake_cpu_quantity: '1.0000 EOS',
+							stake_net_quantity: '1.00000000 ABBC',
+							stake_cpu_quantity: '1.00000000 ABBC',
 							transfer: false,
 						}
 					}]
