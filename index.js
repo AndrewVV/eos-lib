@@ -1,12 +1,9 @@
 // development only
-const nameAccount = "eosandrewvv1"
+require('dotenv').config();
+const nameAccount = "eosandrewvv1" // your name account
 const provider = 'http://jungle2.cryptolions.io:8888'
 const providerHistory = 'https://junglehistory.cryptolions.io';
-const publicKeyOwner = "EOS6hB22JB3vBm8YdjTCTucxar4E2wvYdfjUesXvUPTEKxgX6QtKX"
-const privateKeyOwner = "5JmzYnQhq9AbzvgFHd4FT8TTdbPSDdEsJmKidcbMw4HNBhSjcCf"
-const publicKeyActive = "EOS53PyaRQ8bDxYU6wwds2iQM5Tjyzjx52z7dehMwkVXrkVwT3e3i"
-const privateKeyActive = "5K1FibAhERHAsED8FstMJCWYxqhxx9zZSNy1XgtCX19Bdxk5bL9"
-
+const privateKeyActive = process.env.privateKeyActive
 const ecc = require('eosjs-ecc')
 const fetch = require('node-fetch');
 const { Api, JsonRpc, RpcError } = require('eosjs');
@@ -20,8 +17,9 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 class EosLib {
 	constructor(){
 		this.getBalance(nameAccount, "EOS")  // ticker name of token
-        // this.sendTx('lioninjungle', "0.0010", "test", "EOS")
+        // this.sendTx('lioninjungle', "0.0010", "", "EOS")
 		// this.getTxInfo(nameAccount)
+		// this.buyCpu()
     }
     
     generateAccount(){
@@ -213,6 +211,38 @@ class EosLib {
     	    }
 		})
 	}
+
+	buyCpu(){
+    	return new Promise(async(resolve,reject)=>{
+    	    try{
+ 				let result = await api.transact({
+ 				   	actions: [					{
+						account: 'eosio',
+						name: 'delegatebw',
+						authorization: [{
+							actor: nameAccount,
+							permission: 'active',
+						}],
+						data: {
+							from: nameAccount,
+							receiver: nameAccount,
+							stake_net_quantity: '1.0000 EOS',
+							stake_cpu_quantity: '1.0000 EOS',
+							transfer: false,
+						}
+					}]
+ 				}, {
+ 				   blocksBehind: 3,
+ 				   expireSeconds: 30,
+                })
+                let txHash = result.transaction_id
+  				console.log(txHash);
+				return resolve(txHash)
+    	    }catch(e){
+    	        return reject(e);
+    	    }
+		})
+    }
 
 	buyRam(){
 		return new Promise(async(resolve,reject)=>{
